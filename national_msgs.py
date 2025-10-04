@@ -24,7 +24,7 @@ if not IP_ADDR:
 url = f"http://{IP_ADDR}:{PORT}"
 create_qr_site(url)
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-# you can delete/hashing this lines if you want to set qr code manualy
+# you can delete/hashing this lines if you want to set qr code manually
 # if you delete/hashing this lines, you can set ip address `IP_ADDR = '0.0.0.0'`
 
 # set root of the site
