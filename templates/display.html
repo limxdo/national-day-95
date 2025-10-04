@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<title>عرض الرسائل</title>
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<style>
+:root{ --green:#0b7e3f; --card:#ffffff; --text:#000; --accent:#ffd700; }
+*{box-sizing:border-box}
+body{ margin:0; min-height:100vh; font-family:"Tajawal",sans-serif; background: linear-gradient(180deg,var(--green),#057f3a); color:#fff; display:flex; flex-direction:column; }
+.header{ padding:12px 18px; }
+.grid{ padding:8px; display:grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap:12px; align-content:start; flex:1; overflow:auto; }
+.card { background: var(--card); color: var(--text); border-radius: 10px; padding: 16px; min-height: 130px; box-shadow: 0 8px 22px rgba(0,0,0,0.25); transition: opacity .6s, transform .4s; } .grid { padding: 8px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 12px; align-content: start; flex: 1; overflow: auto; }
+.name{ font-weight:800; color:var(--green); margin-bottom:8px; }
+.text{ font-size:16px; line-height:1.4; white-space:pre-wrap; word-break: break-word; overflow-wrap: break-word; }
+.fading{ opacity:0; transform: translateY(10px) scale(0.98); }
+.qr-box { position: fixed; bottom: 12px; width: 140px; text-align: center; font-size: 14px; color: #fff; } .qr-box img { width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); } .qr-left { left: 12px; } .qr-right { right: 12px; } .qr-box p { margin: 6px 0 0; font-weight: 600; }
+</style>
+</head>
+<body>
+  <div class="header"><h2 style="margin:0 ; text-align: center;">🇸🇦 رسائل اليوم الوطني 🇸🇦</h2></div>
+  <div id="grid" class="grid"></div>
+  <div class="qr-box qr-left">
+    <img src="{{ url_for('static', filename='img/qr-site.png')}}" alt="باركود الشبكة">
+    <p>🌐 افتح الموقع</p>
+  </div>
+  <div class="qr-box qr-right">
+    <img src="{{ url_for('static', filename='img/qr-wifi.png')}}" alt="باركود الموقع">
+    <p>📶 اتصل بالشبكة اولا</p>
+  </div>
+
+<script>
+const POLL_MS = 2500;
+const LIFETIME_MS = 90_000;
+const grid = document.getElementById('grid');
+const shown = new Set(); // يخزن ids اللي استهلكناها حتى لا نعرضها مرة ثانية محلياً
+
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, m=> ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":"&#39;"}[m])); }
+
+function addCard(item){
+  const id = String(item.id);
+  if (shown.has(id)) return; // استهلكناها سابقاً
+  shown.add(id);
+
+  const card = document.createElement('div');
+  card.className = 'card';
+  card.innerHTML = `<div class="name">${escapeHtml(item.name)}</div><div class="text">${escapeHtml(item.text)}</div>`;
+  grid.insertBefore(card, grid.firstChild); // تبدأ من الأعلى (بداية الصفحة)
+  // حذف ناعم بعد دقيقة
+  setTimeout(()=>{
+    card.classList.add('fading');
+    setTimeout(()=> { card.remove(); }, 700);
+  }, LIFETIME_MS);
+}
+
+async function poll(){
+  try {
+    const res = await fetch('/api/get', {cache:'no-store'});
+    if (!res.ok) return;
+    const arr = await res.json();
+    if (!Array.isArray(arr)) return;
+    for (const it of arr) addCard(it);
+  } catch (err) {
+    console.warn('fetch failed', err);
+  }
+}
+
+// بداية
+poll();
+setInterval(poll, POLL_MS);
+</script>
+</body>
+</html>
