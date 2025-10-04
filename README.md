@@ -2,6 +2,7 @@
 
 ### In collaboration with [Abdulahk1](https://github.com/Abdulahk1)
 
+---
 # Usage
 
 - **install required libraries `flask` and `qrcode`**
@@ -11,6 +12,7 @@ pip install flask qrcode
 ```
 
 > or install it from distro official repositories
+---
 
 - **add a qr code for your local network in `static/img/qr-wifi.png`**
 
@@ -22,13 +24,11 @@ pip install flask qrcode
 
 > `python gen_qr.py '[URL]'`
 
-- **you must set your ip in `IP_ADDR` varible or set ip manual from flask**
-
+---
 - **by default, app is run on device (ip '127.0.0.1')**
-
 - **but if you want to run it as server in local network**
-
 - **change 'IP_ADDR' variable to your ip in local network**
+---
 
 - **finally, run:**
 
@@ -38,5 +38,6 @@ python national_msgs.py
 chmod +x national_msgs.py
 ./national_msgs.py
 ```
+---
 
 > `national_msgs.py` is main program
