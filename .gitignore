@@ -1,0 +1,15 @@
+# general files
+#------------------------------
+__pycache__
+static/db/messages.db
+static/img/qr-site.png
+static/img/qr-wifi.png
+static/manual/*
+#------------------------------
+
+# folders must be keep
+#------------------------------
+!static/db/.gitkeep
+!static/manual/.gitkeep
+!static/img/.gitkeep
+#------------------------------
