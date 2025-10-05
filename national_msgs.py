@@ -17,7 +17,9 @@ PORT = 5000
 prgdb.creat_db('static/db/messages.db')
 
 if not IP_ADDR:
-    raise ValueError("Empty IP, please set your ip in 'IP_ADDR'.\n(dont set '0.0.0.0', set your valid ip)")
+    raise ValueError("Empty IP_ADDR, please set your ip in 'IP_ADDR'.\n(dont set '0.0.0.0', set your valid ip)")
+if not PORT:
+    raise ValueError("Empty PORT, please set port in 'PORT'")
 
 #-------------------------------
 # create qr code
