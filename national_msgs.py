@@ -14,7 +14,7 @@ IP_ADDR = '127.0.0.1'
 PORT = 5000
 
 # create database file if not exist
-prgdb.creat_db('static/db/messages.db')
+DB = prgdb.database('static/db/messages.db')
 
 if not IP_ADDR:
     raise ValueError("Empty IP_ADDR, please set your ip in 'IP_ADDR'.\n(dont set '0.0.0.0', set your valid ip)")
@@ -23,14 +23,14 @@ if not PORT:
 
 #-------------------------------
 # create qr code
-url = f"http://{IP_ADDR}:{PORT}"
+url = f"http://{IP_ADDR}:{PORT}/form"
 create_qr_site(url)
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 # you can delete/hashing this lines if you want to set qr code manually
 # if you delete/hashing this lines, you can set ip address `IP_ADDR = '0.0.0.0'`
 
 # set root of the site
-@app.route('/')
+@app.route('/form')
 def form():
     return render_template('form.html')
 
@@ -58,7 +58,7 @@ def api_post():
 
     # add user adn text to database and check if added 
     try:
-        res = prgdb.add_user({"name": name, "text": text})
+        res = DB.add_user({"name": name, "text": text})
     except Exception as e:
         app.logger.exception("DB error on add_user")
         return jsonify({"ok": False, "error": "server error"}), 500
@@ -75,7 +75,7 @@ def api_get():
     # send data from database to 'display' page
     try:
         # get name and text from database and delete it
-        msgs = prgdb.pop_messages(limit=500)
+        msgs = DB.pop_messages(limit=500)
         return jsonify(msgs)
     except Exception:
         app.logger.exception("DB error on pop_messages")
